@@ -7,21 +7,37 @@ const saveBtn = document.getElementById("jsSave");
 
 const ctx = canvas.getContext("2d");
 
+const INITIAL_SIZE = 500;
+const INITIAL_COLOR = "2c2c2c";
 
-canvas.width = 500;
-canvas.height = 500;
+canvas.width = INITIAL_SIZE;
+canvas.height = INITIAL_SIZE;
 
 ctx.lineWidth = 2.5;
-ctx.strokeStyle = "#2c2c2c";
+ctx.strokeStyle = INITIAL_COLOR;
+ctx.fillStyle = INITIAL_COLOR;
 
 let painting = false;
+let filling = false;
 
-function handleFillBtn() {
-    let region = new Path2D();
-    const crntColor = ctx.strokeStyle;
-    ctx.fillStyle = crntColor;
-    ctx.fill(region);
+function changeFillColor() {
+    if(filling) {
+        ctx.fillRect(0, 0, INITIAL_SIZE, INITIAL_SIZE);
+    }  
 }
+
+function handleModeChange() {
+    if (filling === true) {
+        filling = false;
+        fillBtn.innerText = "FILL";
+    } else {
+        filling = true;
+        fillBtn.innerText = "PAINT";
+        ctx.fillStyle = ctx.strokeStyle;
+    }
+}
+    
+
 
 function handleChangeBrushSize(event) {
     const crntSize = event.target.value;
@@ -31,7 +47,7 @@ function handleChangeBrushSize(event) {
 function handleChangeColor(event) {
     const bkColor = event.target.style.backgroundColor;
     ctx.strokeStyle = bkColor;
-    console.log(ctx.strokeStyle);
+    ctx.fillStyle = bkColor;
 }
 
 function stopPainting() {
@@ -61,13 +77,14 @@ function init() {
         canvas.addEventListener("mouseup", stopPainting);
         canvas.addEventListener("mousedown", onMouseDown);
         canvas.addEventListener("mouseleave", stopPainting);
+        canvas.addEventListener("click", changeFillColor);
     }
 
     Array.from(colors).forEach(color => 
         color.addEventListener("click", handleChangeColor));
 
     controls.addEventListener("input", handleChangeBrushSize);
-    fillBtn.addEventListener("click", handleFillBtn);
+    fillBtn.addEventListener("click", handleModeChange);
 }
 init();
 
