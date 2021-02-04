@@ -13,6 +13,8 @@ const INITIAL_COLOR = "2c2c2c";
 canvas.width = INITIAL_SIZE;
 canvas.height = INITIAL_SIZE;
 
+ctx.fillStyle = "white";
+ctx.fillRect(0, 0, INITIAL_SIZE, INITIAL_SIZE);
 ctx.lineWidth = 2.5;
 ctx.strokeStyle = INITIAL_COLOR;
 ctx.fillStyle = INITIAL_COLOR;
@@ -71,6 +73,18 @@ function onMouseDown(event) {
     painting = true;
 }
 
+function handleCM(event) {
+    event.preventDefault();
+}
+function handleSaveBtn() {
+    const image = canvas.toDataURL("image/png");
+    const link = document.createElement("a");
+    link.href = image;
+    link.download = "saveThisImage";
+    link.click();
+
+}
+
 function init() {
     if(canvas) {
         canvas.addEventListener("mousemove", onMouseMove);
@@ -78,6 +92,7 @@ function init() {
         canvas.addEventListener("mousedown", onMouseDown);
         canvas.addEventListener("mouseleave", stopPainting);
         canvas.addEventListener("click", changeFillColor);
+        canvas.addEventListener("contextmenu", handleCM);
     }
 
     Array.from(colors).forEach(color => 
@@ -85,6 +100,7 @@ function init() {
 
     controls.addEventListener("input", handleChangeBrushSize);
     fillBtn.addEventListener("click", handleModeChange);
+    saveBtn.addEventListener("click", handleSaveBtn);
 }
 init();
 
